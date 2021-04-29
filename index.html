@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap-social/bootstrap-social.css">
+    <link rel="stylesheet" href="node_modules/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <title>eCalculator</title>
+</head>
+
+<body>
+    <header class="jumbotron">
+        <div class="container">
+            <div class="row row-header">
+                <div class="col-12 center">
+                    <h1>eCalculator</h1>
+                    <p>The easiest way to calculate!</p>
+                </div>
+                <div class="col-12 right">
+                    <a href="#infoModal" data-toggle="modal"><i class="bi bi-info-circle-fill"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="infoModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md" role="content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title center">Information</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>This is the easiest calculator you have ever visited. Just click on the website and calculate. It is that simple.</p>
+                    <p>Following operators are supported:</p>
+                    <ul>
+                        <li>'/' for division</li>
+                        <li>'*' for multiplications</li>
+                        <li>'+' for addition</li>
+                        <li>'-' for subtraction</li>
+                        <li>'^' for power of</li>
+                        <li>'%' for remainder</li>
+                        <li>'!' for factorial</li>
+                    </ul>
+                    <p></p>
+                    <p>Use the CLEAR button to clear the field for typing in new calculations.</p>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row row-content">
+            <div class="col">
+                <h5 class="center">Last calculations</h5>
+                <p></p>
+                <p id="calc1" class="center"></p>
+                <p id="calc2" class="center"></p>
+                <p id="calc3" class="center"></p>
+                <p id="calc4" class="center"></p>
+                <p id="calc5" class="center"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row row-content">
+            <div class="col-2"></div>
+            <form class="col-8 center">
+                <div class="mb-3 center">
+                    <!-- <label for="calculation" class="form-label">Type in your calculation</label> -->
+                    <!-- <input type="text" class="form-control" id="calculate"> -->
+                    <input type="text" placeholder="Type in you calculation" id="calculation">
+                    
+                </div>
+                <button id="calculate" class="btn btn-primary" type="button">Calculate</button>
+                <button id="clear" class="btn btn-secondary" type="button">Clear</button>
+            </form>
+        </div>
+        <div class="row row-content">
+            <div class="col-2"></div>
+            <form class="col-8 center">
+                <div class="mb-3 center">
+                    <label for="result" class="form-label"><h3>Result</h3></label>
+                    <!-- <input type="text" class="form-control" id="calculate"> -->
+                    <p id="result" class="resultField"></p>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="node_modules/jquery/dist/jquery.slim.min.js"></script>
+    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        function calculate() {
+            let calc = document.getElementById('calculation').value;
+            lastCalcs.unshift(calc);
+            if(lastCalcs.length > 5)
+                lastCalcs.pop();
+            var i = 0;
+            var num1 = 0;
+            var num2 = 0;
+            var operator = '';
+            var result = 0;
+            if(calc.length != 0) {
+                while(!isNaN(calc[i])) {
+                    num1 += calc[i];
+                    i++;
+                }
+                num1 = parseInt(num1);
+                if(calc[i] === ' ') {
+                    i++;
+                }
+                if (isOperator(calc[i]) != -1) {
+                    operator = isOperator(calc[i]);
+                    i++;
+                    if(calc[i] === ' ') {
+                        i++;
+                    }
+                    if (operator != '!') {
+                        while(!isNaN(calc[i])) {
+                            num2 += calc[i];
+                            i++;
+                        }
+                        num2 = parseInt(num2);
+                        if(operator === '+') {
+                            result = num1 + num2;
+                        } else if (operator === '-'){
+                            result = num1 - num2;
+                        } else if (operator === '/'){
+                            result = num1 / num2;
+                        } else if (operator === '*'){
+                            result = num1 * num2;
+                        } else if (operator === '%'){
+                            result = num1 % num2;
+                        } else if (operator === '^'){
+                            result = num1 ** num2;
+                        }
+                    } else if (operator === '!') {
+                        var z = 1;
+                        var e = 1;
+                        while(z <= num1) {
+                            e *= z;
+                            z++;
+                        }
+                        result = e;
+                        i++;
+                    }
+                } else {
+                    result = num1;
+                }
+
+
+            } else {
+                alert("Please type in a calculation!");
+            }
+            lastResults.unshift(result);
+            if(lastResults.length > 5)
+                lastResults.pop();
+                
+            return result;
+        }
+
+        function isOperator(calc) {
+            if(calc === '+') 
+                return '+';
+            if(calc === '-')
+                return '-';
+            if(calc === '/')
+                return '/';
+            if(calc === '*')
+                return '*';
+            if(calc === '^')
+                return '^';
+            if(calc === '%')
+                return '%';
+            if(calc === '!')
+                return '!';
+            
+            return -1;
+                
+        }
+
+    </script>
+
+    <script>
+        var lastCalcs = new Array(5);
+        var lastResults = new Array(5);
+        $(document).ready(function(){
+            
+            $("#calculate").click(function(){
+                document.getElementById("result").innerHTML = calculate();
+
+                if(lastCalcs[0] != undefined)
+                    document.getElementById('calc1').innerHTML = lastCalcs[0] + " = " + lastResults[0];
+                if(lastCalcs[1] != undefined)
+                    document.getElementById('calc2').innerHTML = lastCalcs[1] + " = " + lastResults[1];;
+                if(lastCalcs[2] != undefined)
+                    document.getElementById('calc3').innerHTML = lastCalcs[2] + " = " + lastResults[2];;
+                if(lastCalcs[3] != undefined)
+                    document.getElementById('calc4').innerHTML = lastCalcs[3] + " = " + lastResults[3];;
+                if(lastCalcs[4] != undefined)
+                    document.getElementById('calc5').innerHTML = lastCalcs[4] + " = " + lastResults[4];;
+                
+            });
+
+            $("#clear").click(function(){
+                document.getElementById("calculation").value = "";
+            });
+        });
+    </script>
+</body>
+
+</html>
